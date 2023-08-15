@@ -1,0 +1,41 @@
+{
+  "manifest_version": 2,
+  "name": "Scuffed yt-dlp",
+  "version": "1.0.0",
+  "author": "Twig",
+
+  "description": "Downloads YouTube Videos",
+
+  "homepage_url": "https://github.com/JustTemmie/youtube-downloader-addon",
+
+  "icons": {
+    "96": "icons/96.png"
+  },
+  
+  "browser_action": {
+    "default_popup": "popup.html"
+  },
+
+  "content_security_policy": "script-src 'self' 'unsafe-eval';object-src 'self'",
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "storage",
+    "webRequest",
+    "webRequestBlocking",
+    "<all_urls>"
+  ],
+
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["app.js"]
+    },
+    {
+      "run_at": "document_start",
+      "matches": ["*://*.youtube.com/watch?*"],
+      "js": ["watch.js"],
+      "css": ["watch.css"]
+    }
+  ]
+}

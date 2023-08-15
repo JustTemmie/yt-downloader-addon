@@ -1,0 +1,50 @@
+{
+  "manifest_version": 2,
+  "name": "Campus+ (beta)",
+  "version": "1.0.1",
+  "author": "Temmie",
+
+  "description": "Makes campus usable",
+  "homepage_url": "https://github.com/JustTemmie/campus-plus",
+
+  "icons": {
+    "48": "icons/campus.png"
+  },
+
+  "permissions": [
+    "storage",
+    "webRequest",
+    "webRequestBlocking",
+    "<all_urls>"
+  ],
+
+  "background": {
+    "scripts": ["testing.js"]
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["*://*.campus.inkrement.no/*"],
+      "js": ["app.js", "beta.js"]
+    },
+    {
+      "matches": ["*://*.campus.inkrement.no/Discussion*"],
+      "js": ["scripts/customCSS.js", "scripts/customAvatars.js", "scripts/insulter.js"]
+    },
+    {
+      "matches": ["*://*.campus.inkrement.no/Education/Lecture*"],
+      "js": ["scripts/videoSpeed.js", "scripts/removeHand.js"]
+    },
+    {
+      "matches": ["*://*.campus.inkrement.no/Assignment*"],
+      "js": ["scripts/removeHand.js"]
+    }
+  ],
+
+  "browser_action": {
+    "default_icon": "icons/campus.png",
+    "default_title": "Campus+",
+    "default_popup": "popup/view.html"
+  }
+}
+  
