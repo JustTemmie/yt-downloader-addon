@@ -14,11 +14,8 @@ RUN mkdir temp/
 RUN pip install -r requirements.txt
 
 # copy the files over
-COPY helper/ .
+COPY helper/ helper/
 COPY config.json .
 COPY main.py .
 
-# configure the container to run in an executed manner
-ENTRYPOINT [ "python" ]
-
-CMD ["main.py" ]
+CMD [ "python", "main.py" ]
