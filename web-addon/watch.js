@@ -113,7 +113,7 @@ async function updateList(url) {
             dLink.innerText = `${resolution} - ${fileExtension} - (${filesize})`
             // dLink.download = "test.mp4"
             dLink.setAttribute("target", "_blank")
-            dLink.href = "https://raw.githubusercontent.com/JustTemmie/campus-plus/main/scripts/insulter.js"
+            dLink.href = `${serverPage}/download/${videoID}?vfID=${formatID}`
 
             listEntry.appendChild(dLink)
             dButtonList.appendChild(listEntry)
