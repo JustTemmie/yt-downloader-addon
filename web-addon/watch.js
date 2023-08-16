@@ -2,6 +2,8 @@ var dButton = null
 var dButtonDiv = null
 var dButtonList = null
 
+const serverPage = "https://beaver.mom:2096"
+
 addEventListener("yt-page-data-updated", (event) => {
     if (dButtonDiv == null || dButton == null) {
         addButton()
@@ -39,8 +41,7 @@ function addButton() {
 
 function recreateDButtonList() {
     if (dButtonList != null) {
-        dButtonList.remove()
-        dButtonList = null
+        delete dButtonList
     }
     dButtonList = document.createElement("div")
     dButtonList.hidden = true
@@ -54,7 +55,7 @@ async function updateList(url) {
     dButtonList.appendChild(errorMessage)
     dButton.appendChild(dButtonList)
 
-    try {
+    // try {
         // example URL: (https://www.youtube.com/watch?v=dQw4w9WgXcQ)
         const regex = /v=([a-zA-Z0-9_-]{11})/;
         let videoID = url.match(regex)[1]
@@ -62,10 +63,12 @@ async function updateList(url) {
         response = await fetch(`https://beaver.mom:2096/info/${videoID}`)
             .then((response) => response.json())
 
-        console.log(response)
-        console.log(response["formats"].length)
+        // console.log(response)
+        // console.log(response["formats"].length)
 
         recreateDButtonList()
+
+        availableFormats = {}
 
         for (let i = 0; i < response["formats"].length; i ++) {
             let format = response["formats"][i]
@@ -73,27 +76,60 @@ async function updateList(url) {
                 console.log(format)
 
                 let resolution = format["resolution"]
-
-                let listEntry = document.createElement("div")
+                let filesize = formatBytes(format["filesize"])
+                let fileExtension = format["ext"]
+                let formatID = format["format_id"]
                 
-                let dLink = document.createElement("a")
-                dLink.innerText = resolution
-        
-                listEntry.appendChild(dLink)
-                dButtonList.appendChild(listEntry)
+                if (resolution in availableFormats) {
+                    if (availableFormats[resolution]["fileExtension"] != "mp4") {
+                        availableFormats[resolution] = {
+                            "filesize": filesize,
+                            "fileExtension": fileExtension,
+                            "formatID": formatID
+                        }        
+                    }
+                }
+
+                else {
+                    availableFormats[resolution] = {
+                        "filesize": filesize,
+                        "fileExtension": fileExtension,
+                        "formatID": formatID
+                    }
+                }
             }
         }
-    
-        dButton.appendChild(dButtonList)
-    }
 
-    catch {
-        let errorMessage = document.createElement("p")
+        for (const [key, value] of Object.entries(availableFormats)) {
+            const resolution = key
+            const filesize = value["filesize"]
+            const fileExtension = value["fileExtension"]
+            const formatID = value["formatID"]
+
+
+            let listEntry = document.createElement("div")
+                    
+            let dLink = document.createElement("a")
+            dLink.innerText = `${resolution} - ${fileExtension} - (${filesize})`
+            // dLink.download = "test.mp4"
+            dLink.setAttribute("target", "_blank")
+            dLink.href = "https://raw.githubusercontent.com/JustTemmie/campus-plus/main/scripts/insulter.js"
+
+            listEntry.appendChild(dLink)
+            dButtonList.appendChild(listEntry)
+        
+            dButton.appendChild(dButtonList)
+        }
+    // }
+
+    // catch {
+        // ADD BACK LET
+        errorMessage = document.createElement("p")
         errorMessage.textContent = "sorry, an error occured :("
 
         dButtonList.appendChild(errorMessage)
         dButton.appendChild(dButtonList)
-    }
+    // }
 }
 
 function showList() {
@@ -109,4 +145,25 @@ function showList() {
     else {
         console.log("what the FFFFuck?!")
     }
+}
+
+
+
+
+
+
+
+// helper functions
+
+// ty stack overflow https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
+function formatBytes(bytes, decimals = 2) {
+    if (!+bytes) return '0 Bytes'
+
+    const k = 1024
+    const dm = decimals < 0 ? 0 : decimals
+    const sizes = ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB']
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
 }
