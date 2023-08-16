@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, redirect
 
 import io
 import yt_dlp
@@ -67,7 +67,7 @@ def download_video(video_id):
         ydl.download(f"https://www.youtube.com/watch?v={video_id}")
             
     print("---------------------")
-    return Flask.redirect(location=f"/{fileLocation}")
+    return redirect(location=f"/{fileLocation}")
     
     # file = read_image(pid)
     # response = make_response(image_binary)
