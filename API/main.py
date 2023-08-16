@@ -92,6 +92,7 @@ if __name__ == "__main__":
     else:
         from waitress import serve
         serve(
+            app=app,
             host=config["HOST"],
             port=config["PORT"],
             debug=config["DEBUG"],
