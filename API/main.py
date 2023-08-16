@@ -1,5 +1,8 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
+
+import io
 import yt_dlp
+import random
 
 import helper.config as configLib
 
@@ -9,7 +12,7 @@ app = Flask(__name__)
 # def root():
 #     return "Root directory"
 
-@app.route("/video-info/<video_id>")
+@app.route("/info/<video_id>")
 def info(video_id):
     
     ydl_opts = {
@@ -23,6 +26,57 @@ def info(video_id):
         
     return info
 
+@app.route("/download/<video_id>")
+def download_video(video_id):
+    # unused rn
+    # authenticationToken = request.args.get("token")
+    
+    sessionID = str(random.randint(0, 999999999999))
+    
+    videoFormatID = request.args.get("vfID")
+    audioFormatID = request.args.get("afID")
+    # if video
+    if audioFormatID != None and videoFormatID == None:
+        videoID = audioFormatID
+    # if audio
+    elif audioFormatID == None and videoFormatID != None:
+        videoID = videoFormatID
+    # if audio and video
+    elif audioFormatID != None and videoFormatID != None:
+        videoID = f"{videoFormatID}+{audioFormatID}"
+    # if neither
+    elif audioFormatID == None and videoFormatID == None:
+        return "invalid request"
+    else:
+        return "what the fuck did you just do??"
+    
+    global fileLocation
+    fileLocation = ""
+    
+    def yt_dlp_monitor(d):
+        global fileLocation
+        fileLocation = d.get('info_dict').get('_filename')
+    
+    ydl_opts = {
+        "format": videoID,
+        "outtmpl": f"temp/%(title)s.id={sessionID}&format={videoID}.%(ext)s",
+        "progress_hooks": [yt_dlp_monitor]
+    }
+    
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        ydl.download(f"https://www.youtube.com/watch?v={video_id}")
+            
+    print("---------------------")
+    return send_file(fileLocation)
+    
+    # file = read_image(pid)
+    # response = make_response(image_binary)
+    # response.headers.set('Content-Type', 'image/jpeg')
+    # response.headers.set(
+    #     'Content-Disposition', 'attachment', filename='%s.jpg' % pid)
+    # return response
+    
+    return f"file is located at `{fileLocation}`"
 
 if __name__ == "__main__":
     with open ("config.json", "r") as f:
