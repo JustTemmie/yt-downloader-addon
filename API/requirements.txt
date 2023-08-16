@@ -1,2 +1,3 @@
 flask
+waitress # to run th eflask app
 yt-dlp

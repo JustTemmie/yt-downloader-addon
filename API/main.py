@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify, send_file, redirect
 
-import io
 import yt_dlp
 import random
 
@@ -31,7 +30,7 @@ def download_video(video_id):
     # unused rn
     # authenticationToken = request.args.get("token")
     
-    sessionID = str(random.randint(0, 999999999999))
+    sessionID = str(random.randint(0, 999999))
     
     videoFormatID = request.args.get("vfID")
     audioFormatID = request.args.get("afID")
@@ -91,7 +90,8 @@ if __name__ == "__main__":
         )
     
     else:
-        app.run(
+        from waitress import serve
+        serve(
             host=config["HOST"],
             port=config["PORT"],
             debug=config["DEBUG"],

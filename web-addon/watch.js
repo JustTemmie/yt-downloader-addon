@@ -80,17 +80,7 @@ async function updateList(url) {
                 let fileExtension = format["ext"]
                 let formatID = format["format_id"]
                 
-                if (resolution in availableFormats) {
-                    if (availableFormats[resolution]["fileExtension"] != "mp4") {
-                        availableFormats[resolution] = {
-                            "filesize": filesize,
-                            "fileExtension": fileExtension,
-                            "formatID": formatID
-                        }        
-                    }
-                }
-
-                else {
+                if (! (resolution in availableFormats && availableFormats[resolution]["fileExtension"] == "mp4")) {
                     availableFormats[resolution] = {
                         "filesize": filesize,
                         "fileExtension": fileExtension,
