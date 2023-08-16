@@ -40,6 +40,12 @@ function addButton() {
 }
 
 function recreateDButtonList() {
+    const elementsToRemove = document.querySelectorAll(".YDA_list")
+
+    // Loop through the elements and remove them
+    elementsToRemove.forEach(element => {
+        element.remove();
+    });
     if (dButtonList != null) {
         delete dButtonList
     }

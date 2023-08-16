@@ -8,6 +8,21 @@ sudo ln -s /etc/letsencrypt/live/beaver.mom/fullchain.pem .ssl_cert
 sudo ln -s /etc/letsencrypt/live/beaver.mom/privkey.pem .ssl_key
 ```
 
+
+
+the config file should look somethign like this:
+{
+    "HOST": "0.0.0.0",
+    "PORT": 9000,
+    "DEBUG": true,
+    "SSL": {
+        "HTTPS_enabled": false,
+   }
+}
+if you want to use SSL, just enable the HTTPS_enabled field
+
+
+
 then build and start the docker container:
 
 sudo docker build --tag yda-api .

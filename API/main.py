@@ -82,18 +82,8 @@ if __name__ == "__main__":
     with open ("config.json", "r") as f:
         config = configLib.get_config(f)
     
-    if config["SSL"]["HTTPS_enabled"] == False:
-        app.run(
-            host=config["HOST"],
-            port=config["PORT"],
-            debug=config["DEBUG"]
-        )
-    
-    else:
-        from gevent.pywsgi import WSGIServer
-        https_server = WSGIServer(
-            (config["HOST"], config["PORT"]),
-            keyfile=".ssl_key",
-            certfile=".ssl_cert"
-        )
-        https_server.serve_forever()
+    app.run(
+        host=config["HOST"],
+        port=config["PORT"],
+        debug=config["DEBUG"]
+    )
