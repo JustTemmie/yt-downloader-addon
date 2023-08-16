@@ -1,2 +1,14 @@
+if you want to run with https:
+copy over your ssl certificate and key, and name them .ssl_cert and .ssl_key
+
+in my example i made 2 sym links like this:
+
+```
+sudo ln -s /etc/letsencrypt/live/beaver.mom/fullchain.pem .ssl_cert
+sudo ln -s /etc/letsencrypt/live/beaver.mom/privkey.pem .ssl_key
+```
+
+then build and start the docker container:
+
 sudo docker build --tag yda-api .
 sudo docker run --restart=always yda-api

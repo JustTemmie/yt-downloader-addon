@@ -14,8 +14,6 @@ RUN mkdir temp/
 RUN pip install -r requirements.txt
 
 # copy the files over
-COPY helper/ helper/
-COPY config.json .
-COPY main.py .
+COPY . .
 
 CMD [ "python", "main.py" ]

@@ -93,7 +93,7 @@ if __name__ == "__main__":
         from gevent.pywsgi import WSGIServer
         https_server = WSGIServer(
             (config["HOST"], config["PORT"]),
-            keyfile=config["SSL"]["key_path"],
-            certfile=config["SSL"]["cert_path"]
+            keyfile=".ssl_key",
+            certfile=".ssl_cert"
         )
         https_server.serve_forever()
