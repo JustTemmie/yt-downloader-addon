@@ -1,0 +1,2 @@
+sudo docker build --tag yda-api .
+sudo docker run --restart=always yda-api

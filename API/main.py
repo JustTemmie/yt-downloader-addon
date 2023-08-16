@@ -90,14 +90,10 @@ if __name__ == "__main__":
         )
     
     else:
-        from waitress import serve
-        serve(
-            app=app,
-            host=config["HOST"],
-            port=config["PORT"],
-            debug=config["DEBUG"],
-            ssl_context=(
-                config["SSL"]["cert_path"],
-                config["SSL"]["key_path"]
-            )
+        from gevent.pywsgi import WSGIServer
+        https_server = WSGIServer(
+            (config["HOST"], config["PORT"]),
+            keyfile=config["SSL"]["key_path"],
+            certfile=config["SSL"]["cert_path"]
         )
+        https_server.serve_forever()
