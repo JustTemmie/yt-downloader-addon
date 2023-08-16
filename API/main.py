@@ -67,7 +67,7 @@ def download_video(video_id):
         ydl.download(f"https://www.youtube.com/watch?v={video_id}")
             
     print("---------------------")
-    return send_file(fileLocation, as_attachment=True, download_name="video")
+    return send_file(fileLocation, as_attachment=True)
     
     
     # file = read_image(pid)
