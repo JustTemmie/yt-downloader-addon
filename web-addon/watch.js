@@ -146,7 +146,7 @@ async function updateList(url) {
                     
             let dLink = document.createElement("a")
             dLink.innerText = `${resolution} - ${fileExtension} - (${filesize})`
-            // dLink.download = "test.mp4"
+            dLink.download = "test.mp4"
             dLink.setAttribute("target", "_blank")
             // if it's audio            
             if (resolution.startsWith("audio")) {
