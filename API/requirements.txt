@@ -1,2 +1,2 @@
-flaskgi
+flask
 yt-dlp

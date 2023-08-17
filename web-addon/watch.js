@@ -4,19 +4,33 @@ var dButtonList = null
 
 const serverPage = "https://beaver.mom:2096"
 
+
 addEventListener("yt-page-data-updated", (event) => {
     if (dButtonDiv == null || dButton == null) {
         addButton()
     }
+
+    
     // call the updateList (async) function outside of an async function
     (async () => {
         await updateList(window.location.href)
     })();
 
+    removeOfficialDownloadButton()
 });
 
+function removeOfficialDownloadButton() {
+    const shittyDownloadButtons = document.querySelectorAll("ytd-download-button-renderer")
+    
+    // Loop through the elements and remove them
+    shittyDownloadButtons.forEach(element => {
+        console.log("YDA: removing google's shitty download button")
+        element.remove();
+    });
+}
+
 function addButton() {
-    console.log("adding button")
+    console.log("YDA: adding download button")
     
     let downloadDiv = document.createElement("div")
     downloadDiv.className = "download-button-YDA style-scope ytd-watch-metadata"
@@ -47,7 +61,7 @@ function recreateDButtonList() {
         element.remove();
     });
     if (dButtonList != null) {
-        delete dButtonList
+        dButtonList = null
     }
     dButtonList = document.createElement("div")
     dButtonList.hidden = true
@@ -61,7 +75,7 @@ async function updateList(url) {
     dButtonList.appendChild(errorMessage)
     dButton.appendChild(dButtonList)
 
-    // try {
+    try {
         // example URL: (https://www.youtube.com/watch?v=dQw4w9WgXcQ)
         const regex = /v=([a-zA-Z0-9_-]{11})/;
         let videoID = url.match(regex)[1]
@@ -74,17 +88,28 @@ async function updateList(url) {
 
         recreateDButtonList()
 
-        availableFormats = {}
+        let availableFormats = {}
+        // thing to put in URL, bitrate
+        let highestQualityAudio = ["", 0]
 
         for (let i = 0; i < response["formats"].length; i ++) {
             let format = response["formats"][i]
             if ("filesize" in format) {
-                console.log(format)
+                // console.log(format)
 
                 let resolution = format["resolution"]
                 let filesize = formatBytes(format["filesize"])
                 let fileExtension = format["ext"]
                 let formatID = format["format_id"]
+
+                if (resolution == "audio only") {
+                    resolution = `audio - ${format["abr"]}Kbps`
+                    // if it's the highest bitrate we've seen so far, save it to be bundled with the video clips when downloading
+                    if (format["abr"] > highestQualityAudio[1]) {
+                        highestQualityAudio[0] = `&afID=${formatID}`
+                        highestQualityAudio[1] = format["abr"]
+                    }
+                }
                 
                 if (! (resolution in availableFormats && availableFormats[resolution]["fileExtension"] == "mp4")) {
                     availableFormats[resolution] = {
@@ -96,7 +121,21 @@ async function updateList(url) {
             }
         }
 
+        // sort that bad boy to put audio at the bottom
+        const sortedAvailableFormats = {}
+
         for (const [key, value] of Object.entries(availableFormats)) {
+            if (! key.includes("audio")) {
+                sortedAvailableFormats[key] = value
+            }
+        }
+        for (const [key, value] of Object.entries(availableFormats)) {
+            if (key.includes("audio")) {
+                sortedAvailableFormats[key] = value
+            }
+        }
+
+        for (const [key, value] of Object.entries(sortedAvailableFormats)) {
             const resolution = key
             const filesize = value["filesize"]
             const fileExtension = value["fileExtension"]
@@ -109,23 +148,32 @@ async function updateList(url) {
             dLink.innerText = `${resolution} - ${fileExtension} - (${filesize})`
             // dLink.download = "test.mp4"
             dLink.setAttribute("target", "_blank")
-            dLink.href = `${serverPage}/download/${videoID}?vfID=${formatID}`
+            // if it's audio            
+            if (resolution.startsWith("audio")) {
+                dLink.href = `${serverPage}/download/${videoID}?afID=${formatID}`
+            }
+            // if it's video
+            else {
+                dLink.href = `${serverPage}/download/${videoID}?vfID=${formatID}${highestQualityAudio[0]}`
+            }
+
 
             listEntry.appendChild(dLink)
             dButtonList.appendChild(listEntry)
         
             dButton.appendChild(dButtonList)
         }
-    // }
+    }
 
-    // catch {
-        // ADD BACK LET
+    catch {
         errorMessage = document.createElement("p")
-        errorMessage.textContent = "sorry, an error occured :("
+        errorMessage.innerHTML = "sorry, an error occured :(</br>time to slam that f5 key :3"
 
         dButtonList.appendChild(errorMessage)
         dButton.appendChild(dButtonList)
-    // }
+    }
+
+    removeOfficialDownloadButton()
 }
 
 function showList() {

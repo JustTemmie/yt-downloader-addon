@@ -21,6 +21,7 @@ the config file should look somethign like this:
 }
 if you want to use SSL, just enable the HTTPS_enabled field
 
+you also need ffmpeg and yt-dlp installed
 
 
 then build and start the docker container:
