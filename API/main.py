@@ -7,9 +7,9 @@ import helper.config as configLib
 
 app = Flask(__name__)
 
-# @app.route("/")
-# def root():
-#     return "Root directory"
+@app.route("/")
+def root():
+    return 'nya :3<br/><iframe width="560" height="315" src="https://www.youtube.com/embed/Fi7OFq05mzU?controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>'
 
 @app.route("/info/<video_id>")
 def info(video_id):
