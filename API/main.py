@@ -39,7 +39,7 @@ def download_video(video_id):
         videoID = audioFormatID
     # if audio
     elif audioFormatID == None and videoFormatID != None:
-        videoID = f"{videoFormatID}+bestaudio"
+        videoID = f"{videoFormatID}"
     # if audio and video
     elif audioFormatID != None and videoFormatID != None:
         videoID = f"{videoFormatID}+{audioFormatID}"
